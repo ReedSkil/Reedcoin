@@ -2,8 +2,27 @@ os.loadAPI("findBlocks.lua")
 os.loadAPI("userInput.lua")
 slot = 1
 
--- Function to build a floor
-function placeDown()
+function getBlocks(blockname)
+	slot = findBlocks.findBlock(blockname)
+	while slot == nil do
+		print("Please input more ")
+		print(blockname)
+		userInput.getUserInput("Type Anything to Continue")
+	end
+	return slot
+end
+
+function setOrientation(newwidth)
+	orientation = 0
+	if newwidth % 2 == 1 then
+		orientation = 0
+	else
+		orientation = 1
+	end
+end
+
+-- Function to place down any blocks within the turtle
+function basicPlaceDown()
 	while not turtle.placeDown() do
 		if slot == 16 then
 			slot = 1
@@ -18,16 +37,7 @@ function placeDown()
 	end
 end
 
-function getBlocks(blockname)
-	slot = findBlocks.findBlock(blockname)
-	while slot == nil do
-		print("Please input more ")
-		print(blockname)
-		userInput.getUserInput("Type Anything to Continue")
-	end
-	return slot
-end
-
+-- Function to place down a specific block
 function smartPlaceDown(blockname)
 	local itemDetail = turtle.getItemDetail(slot)
 	if itemDetail and itemDetail.name ~= blockName then
@@ -45,7 +55,8 @@ function smartPlaceDown(blockname)
 	return slot
 end
 
-function buildFloor(newlength, newwidth)
+-- Function to build a floor (using ANY materials in turtle)
+function basicBuildFloor(newlength, newwidth)
     width = newwidth
 	length = newlength
 	for i = 1, length do
@@ -69,7 +80,8 @@ function buildFloor(newlength, newwidth)
     end
 end
 
-function buildFloorBlock(newlength, newwidth, blockname)
+-- Function to build a floor using only a specific blocktype in the turtles inventory
+function blockBuildFloor(newlength, newwidth, blockname)
 	width = newwidth
 	length = newlength
 	for i = 1, length do
@@ -93,7 +105,39 @@ function buildFloorBlock(newlength, newwidth, blockname)
 	end
 end
 
-function buildWalls(newlength, newwidth, height)
+--Function to build a wall (using ANY materials in turtle)
+function basicBuildWall(newlength, height)
+	length = newlength
+	for i = 1, height do
+        	turtle.up()
+        end
+	for j = 1, length do
+		buildSupportBeam(height)
+		turtle.forward()
+		for k = 1, height do
+        		turtle.down()
+            	end
+	end
+end
+
+--Function to build a wall using only a specific blocktype in the turtles inventory
+function blockBuildWall(newlength, height, blockname)
+	length = newlength
+	for i = 1, height do
+        	turtle.up()
+        end
+	for j = 1, length do
+		buildSupportBeamBlock(height, blockname)
+		turtle.forward()
+		for k = 1, height do
+        		turtle.down()
+            	end
+	end
+end
+
+--Function to build 4 walls for a tower. This does not include corners for design choices
+--(using ANY materials in turtle)
+function basicBuildWallsTower(newlength, newwidth, height)
 	width = newwidth - 2
 	length = newlength - 2 
 	distance = 0
@@ -116,7 +160,9 @@ function buildWalls(newlength, newwidth, height)
 	end
 end
 
-function buildWallsBlock(newlength, newwidth, height, blockname)
+--Function to build 4 walls for a tower. This does not include corners for design choices
+--(using only a specific blocktype in the turtles inventory)
+function blockBuildWallsTower(newlength, newwidth, height, blockname)
 	width = newwidth - 2
 	length = newlength - 2 
 	distance = 0
@@ -139,7 +185,8 @@ function buildWallsBlock(newlength, newwidth, height, blockname)
 	end
 end
 
-function buildSupportBeam(height)
+--builds a small 1 block pillar (using ANY materials in turtle)
+function basicBuildSupportBeam(height)
 	turtle.up()
 	for j = 1, height do
         	placeDown()
@@ -149,7 +196,8 @@ function buildSupportBeam(height)
         end
 end
 
-function buildSupportBeamBlock(height, blockname)
+--builds a small 1 block pillar using only a specific blocktype in the turtles inventory
+function blockBuildSupportBeam(height, blockname)
 	turtle.up()
         for j = 1, height do
         	smartPlaceDown(blockname)
@@ -159,7 +207,8 @@ function buildSupportBeamBlock(height, blockname)
         end
 end
 
-function buildSupportBeams(height, orientation)
+--builds the 4 corners of the BuildWallsTower function. (using ANY materials in turtle)
+function basicBuildSupportBeams(height, orientation)
 	width = width - 1
 	length = length - 1
 	for i = 1, 4 do
@@ -206,7 +255,8 @@ function buildSupportBeams(height, orientation)
 	end
 end
 
-function buildSupportBeamsBlock(height, orientation, blockname)
+--builds the 4 corners of the BuildWallsTower function using only a specific blocktype in the turtles inventory.
+function blockBuildSupportBeams(height, orientation, blockname)
 	width = width - 1
 	length = length - 1
 	for i = 1, 4 do
@@ -253,11 +303,75 @@ function buildSupportBeamsBlock(height, orientation, blockname)
 	end
 end
 
-function setOrientation(newwidth)
-	orientation = 0
-	if newwidth % 2 == 1 then
-		orientation = 0
+-- THE FOLLOWING FUNCTIONS ARE USED TO SIMULATE OVERLOADED FUNCTIONS IN LUA FOR THE ABOVE FUNCTIONS
+
+function placeDown(newblockname)
+	blockname = newblockname or false
+	if blockname then
+		smartPlaceDown(blockname)
 	else
-		orientation = 1
+		basicPlaceDown()
 	end
 end
+
+function buildFloor(newlength, newwidth, newblockname)
+	--this was included incase I want a default value for future use
+	length = newlength
+	width = newwidth
+	blockname = newblockname or false
+	if blockname then
+		blockBuildFloor(length, width, blockname)
+	else
+		basicBuildFloor(length, width)
+	end
+end
+
+function buildWall(newlength, newheight, newblockname)
+	--this was included incase I want a default value for future use
+	length = newlength
+	height = newheight
+	blockname = newblockname or false
+	if blockname then
+		blockBuildWall(length, height, blockname)
+	else
+		basicBuildWall(length, height)
+	end
+end
+
+function buildWallsTower(newlength, newwidth, newheight, newblockname)
+	--this was included incase I want a default value for future use
+	length = newlength
+	width = newwidth
+	height = newheight
+	blockname = newblockname or false
+	if blockname then
+		blockbuildWallsTower(length, width, blockname)
+	else
+		basicbuildWallsTower(length, width, height)
+	end
+end
+
+function buildSupportBeam(newheight, newblockname)
+	--this was included incase I want a default value for future use
+	height = newheight
+	blockname = newblockname or false
+	if blockname then
+		blockBuildSupportBeam(height, blockname)
+	else
+		basicBuildSupportBeam(height)
+	end
+end
+
+function blockBuildSupportBeams(newheight, neworientation, newblockname)
+	--this was included incase I want a default value for future use
+	height = newheight
+	orientation = neworientation
+	blockname = newblockname or false
+	if blockname then
+		blockBuildSupportBeams(height, orientation, blockname)
+	else
+		basicBuildSupportBeams(height, orientation)
+	end
+end
+
+
