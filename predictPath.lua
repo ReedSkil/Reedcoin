@@ -17,8 +17,8 @@ function userGetLocation()
 end
 
 --function to set global variables that calculate travel distances and target coordinates
-function setGobalVars(ntx, nty, ntz, cx, cy, cz)
-  path = newPath or {}
+function setGobalVars(ntx, nty, ntz, cx, cy, cz, newpath)
+  path = newpath or {}
   tx = ntx
   ty = nty - 1
   tz = ntz
@@ -58,10 +58,10 @@ function predict1D(dim, diff, fuelcost, path)
 end
 
 --function to predict fuel cost and map out the turtle path for a 1 way trip.
-function predict1Path(ntx, nty, ntz, newPath)
+function predict1Path(ntx, nty, ntz, newpath)
   cx, cy, cz = getTurtleLocation()
   fuelcost = 0
-  setGobalVars(ntx, nty, ntz, cx, cy, cz)
+  setGobalVars(ntx, nty, ntz, cx, cy, cz, newpath)
   fuelcost, pos, path = predict1D("y", diffy, fuelcost, path)
   cy = pos[2]
   fuelcost, pos, path = predict1D("x", diffx, fuelcost, path)
@@ -72,10 +72,10 @@ end
 
 --function to predict fuel cost and map out the turtle path for a 1 way trip that elevates to cruising altitude.
 --cruising altitude is at 250 blocks and implemented to prevent uncessesary enviorment damage and un-impeded travel.
-function predict1LongPath(ntx, nty, ntz, newPath)
+function predict1LongPath(ntx, nty, ntz, newpath)
   cx, cy, cz = getTurtleLocation()
   fuelcost = 0
-  setGobalVars(ntx, nty, ntz, cx, cy, cz)
+  setGobalVars(ntx, nty, ntz, cx, cy, cz, newpath)
   -- Go to Travel Height
   fuelcost, pos, path = predict1D("y", diffhc, fuelcost, path)
   cy = pos[2]
@@ -102,8 +102,8 @@ function roundPath(onepath)
 end
 
 --function to predict the fuel cost and pathing for the round trip a turtle may make
-function predictRoundPath(ntx, nty, ntz, newPath)
-  fuelcost, path = predict1Path(ntx, nty, ntz, newPath)
+function predictRoundPath(ntx, nty, ntz, newpath)
+  fuelcost, path = predict1Path(ntx, nty, ntz, newpath)
   fuelcost = fuelcost * 2
   path = roundPath(path)
   return fuelcost, path
@@ -111,11 +111,10 @@ end
 
 --function to predict the fuel cost and pathing for the round trip a turtle may make that elevates to cruising altitude.
 --cruising altitude is at 250 blocks and implemented to prevent uncessesary enviorment damage and un-impeded travel.
-function predictRoundLongPath(ntx, nty, ntz, newPath)
-  fuelcost, path = predict1LongPath(ntx, nty, ntz, newPath)
+function predictRoundLongPath(ntx, nty, ntz, newpath)
+  fuelcost, path = predict1LongPath(ntx, nty, ntz, newpath)
   fuelcost = fuelcost * 2
   path = roundPath(path)
   return fuelcost, path
 end
-
   
