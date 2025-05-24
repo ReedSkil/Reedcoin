@@ -1,4 +1,4 @@
---pathing in the following code is used to project turtle pathways to ensure
+--pathing in the following code is used to project turtle pathways (that contain a modem for GPS tracking) to ensure
 --1. Un-nessesary enviorment damage
 --2. Potential turtle colision
 --3. Log pathways to retrieve malfunctioning/lost turtles
