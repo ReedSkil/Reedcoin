@@ -144,9 +144,8 @@ end
 --Predict the fuel cost of a turtle c
 function predictSimpleQuarry(length, width, depth, type)
   type = type or ""
-  --implemented to adjust for the turtle entering an leaving the quarry area
-  fuelcost = fuelcost + 2
-  fuelcost = fuelcost + predictQuarryFuelCost(length, width, depth)
+  --initial value of 2 was implemented to adjust for the turtle entering an leaving the quarry area
+  fuelcost = 2 + predictQuarryFuelCost(length, width, depth)
   if type == "return" then
     fuelcost = fuelcost + predictToStart(length, width, depth)
   end
