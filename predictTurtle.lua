@@ -117,4 +117,39 @@ function predictRoundLongPath(ntx, nty, ntz, newpath)
   path = roundPath(path)
   return fuelcost, path
 end
-  
+
+---------------------------------------------------------------------------------
+--Functions to Predict Quarry Fuel Costs (Pathing TBD)
+
+function predictQuarryFuelCost(length, width, depth)
+  return ((depth + 1) * width) + length
+end
+
+--Predict the fuel cost of a turtle navigating back to start position
+function predictToStart(length, width, depth)
+  fuelcost = 0
+  --if both length and width are even or odd
+  if (length % 2) == (width % 2) then
+    --turtle is at the bottom of quarry
+    fuelcost = fuelcost + depth
+  end
+  --if width is even
+  if width % 2 == 0 then
+    --turtle is on close side of quarry
+    length = 1
+  end
+  return fuelcost + (width - 1) + (length - 1)
+end
+
+--Predict the fuel cost of a turtle c
+function predictSimpleQuarry(length, width, depth, type)
+  type = type or ""
+  --implemented to adjust for the turtle entering an leaving the quarry area
+  fuelcost = fuelcost + 2
+  fuelcost = fuelcost + predictQuarryFuelCost(length, width, depth)
+  if type == "return" then
+    fuelcost = fuelcost + predictToStart(length, width, depth)
+  end
+  return fuelcost
+end
+
