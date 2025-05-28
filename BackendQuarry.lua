@@ -1,5 +1,4 @@
 --todo:
---implement smart quarry (ie quarry that mines only a specific block, this type of quarry MUST backtrack as it is designed for sand/gravel)
 --implement ejection of materials code (ie inventory space reserved for specified materials/quarrying equipment)
 
 
