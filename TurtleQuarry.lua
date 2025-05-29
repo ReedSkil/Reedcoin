@@ -39,7 +39,7 @@ end
  
 -- Function to quarry mine a various sized hole
 -- temp note: blockname no longer needed, however this should be replaced with itemlist and equivalent code structure for material ejection feature
-function mine(width, length, newblockname)
+function quarry(width, length, newblockname)
   blockname = newblockname or nil
   down = true
   for i = 1, length do
