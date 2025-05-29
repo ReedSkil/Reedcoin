@@ -26,7 +26,7 @@ end
 
 -- Function to Mine to Depth
 -- temp note: blockname no longer needed, however this should be replaced with itemlist and equivalent code structure for material ejection feature
-function mineColumn(down, newblockname)
+function mineColumn(depth, down, newblockname)
   for i = 1, depth do
     dig(down, newblockname)
   end
@@ -39,16 +39,16 @@ end
  
 -- Function to quarry mine a various sized hole
 -- temp note: blockname no longer needed, however this should be replaced with itemlist and equivalent code structure for material ejection feature
-function quarry(width, length, newblockname)
+function quarry(length, width, depth, newblockname)
   blockname = newblockname or nil
   down = true
   for i = 1, length do
     for j = 1, width do
-      mineColumn(down, blockname)
+      mineColumn(depth, down, blockname)
       turtleForward.moveForward()
     end
     if i < length then
-      mineColumn(down, blockname)
+      mineColumn(depth, down, blockname)
       if i % 2 == 1 then
         turtle.turnRight()
         turtleForward.moveForward()
