@@ -4,6 +4,7 @@
 -- Overloaded functionality with other quarry options (smartquarry, etc.)
 
 os.loadAPI("TurtleFuel.lua")
+os.loadAPI("TurtlePredict.lua")
 
 local function clearScreen()
   term.clear()
@@ -26,62 +27,74 @@ function refuel(fuelcost)
   return true
 end
 
-function fuelcheckandmine(width, length, depth)
-  predictSimpleQuarry.predict(width, length, depth)
-  fuelcost = predictSimpleQuarry.getFuelCost()
+function fuelcheckandmine(length, width, depth, start)
+  fuelcost = TurtlePredict.predictSimpleQuarry(length, width, depth, start)
   if fuelcost > turtle.getFuelLevel() then
     if not refuel(fuelcost) then
       return false
     end
   end
   return true
-  simpleQuarry.quarry(width, length, depth)
+  TurtleQuarry.quarry(length, width, depth, start)
 end
 
 function getUserInput()
   invalid = true
     while invalid do
       clearScreen()
-      width = tonumber(userInput.getUserInput("Enter Length: "))
-      length = tonumber(userInput.getUserInput("Enter Width: "))
-      depth = tonumber(userInput.getUserInput("Enter Depth"))
+      print("Enter Length: ")
+      width = tonumber(read())
+      print("Enter Width: ")
+      length = tonumber(read())
+      print("Enter Depth: ")
+      depth = tonumber(read())
+      print("Return to Start? (1 for yes, 2 for no)")
+      start = tonumber(read())
       if width == nil or width == 0 then
         print("Invalid Length!")
       elseif length == nil or length == 0 then
         print("Invalid Width!")
       elseif depth == nil or depth == 0 then
         print("Invalid Depth!")
+      elseif start ~= 1 and start ~= 2 then
+        print("Invalid Start Choice!")
       else
         invalid = false
       end
     end
-    return length, width, depth
+    if start == 1 then
+      start = "return"
+    else
+      start = ""
+    end
+    return length, width, depth, start
+end
+
+function finalChecks(volume)
+  choice = 0
+  print("Volume: " .. volume .. " blocks")
+  if volume > 800 then
+    print("WARNING! Volume over 800")
+    print("Max is 1024 with Empty Inventory")
+    print("With Stacks of 64.")
+  end
+  print("Proceed?")
+  print("Yes = 1, No = 2")
+  choice = tonumber(read())
+  if choice == 1 then
+    return true
+  else
+    return false
+  end
 end
  
 function quarry()
-  choice = 0
-  while choice ~= 1 do
-    length, width, depth = getUserInput()
-    
-    volume = length * width * depth  
-    print("Volume: " .. volume .. " blocks")
-    if volume > 800 then
-      print("WARNING! Volume over 800")
-      print("Max is 1024 with Empty Inventory")
-      print("With Stacks of 64.")
-    end
-    max = volume > 9000
-    if not max then
-      print("Proceed?")
-      choice = tonumber(userInput.getUserInput("Yes = 1, No = 2"))
-      fuelcheckandmine(width, length, depth)
-    else
-      print("Volume = " .. volume)
-      print("Volume Over 5000, Please Reselect Size Constraints")
-      print("continue?")
-      choice = tonumber(userInput.getUserInput("Yes = 1, No = 2"))
-      if choice == 1 then
-        fuelcheckandmine(width, length, depth)
+  while not check do
+    length, width, depth, start = getUserInput()
+    volume = length * width * depth 
+    check = finalChecks(volume)
+      if check then
+        fuelcheckandmine(length, width, depth, start)
       end
     end
 end
