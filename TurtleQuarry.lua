@@ -36,10 +36,28 @@ function mineColumn(depth, down, newblockname)
     down = true
   end
 end
+
+--function to return a turtle to the starting block of the quarry (turtle also faces starting position)
+function toStart(length, width)
+    if length % 2 == 1 then
+        turtle.turnLeft()
+        turtle.turnLeft()
+        for i = 1, width do
+            turtle.forward()
+        end
+    end
+    turtle.turnRight()
+    for j = 2, length do
+        turtle.forward()
+    end
+    turtle.turnLeft()
+    turtle.turnLeft()
+end
  
 -- Function to quarry mine a various sized hole
 -- temp note: blockname no longer needed, however this should be replaced with itemlist and equivalent code structure for material ejection feature
-function quarry(length, width, depth, newblockname)
+function quarry(length, width, depth, newstart, newblockname)
+  start = newstart or ""
   blockname = newblockname or nil
   down = true
   for i = 1, length do
@@ -58,6 +76,13 @@ function quarry(length, width, depth, newblockname)
         turtleForward.moveForward()
         turtle.turnLeft()
       end
+    end
+  end
+  if start == "return" then
+    toStart(length, width)
+  elseif start == "up" then
+    for i = 1, depth do
+      turtle.up()
     end
   end
 end
@@ -83,7 +108,7 @@ end
 -- Function to Mine to Depth until the specific block is found, then it backtracks to the top
 --unlike mine, this turtle backtracks to avoid mining unecessary blocks
 --a detection system can be programmed here to avoid backtracking (however this may never be done as the turtle cannot retain memory of ALL community blocks that behave like gravel/sand)
-function smartMineDepth(blockname)
+function smartMineDepth(depth, blockname)
   i = 1
   while i ~= depth do
     if turtle.down() then
@@ -103,24 +128,33 @@ function smartMineDepth(blockname)
 end
 
 -- Function to quarry out an area of a specific bloc
-function smartMine(blockname)
+function smartMine(length, width, depth, newstart, newblockname)
+  start = newstart or ""
+  blockname = newblockname or nil
   for i = 1, length do
     for j = 1, width do
-      smartMineDepth(blockname)
+      smartMineDepth(depth, blockname)
       turtleForward.moveForward()
     end
     if i < length then
       if i % 2 == 1 then
-        smartMineDepth(blockname)
+        smartMineDepth(depth, blockname)
         turtle.turnRight()
         turtleForward.moveForward()
         turtle.turnRight()
       else
-        smartMineDepth(blockname)
+        smartMineDepth(depth, blockname)
         turtle.turnLeft()
         turtleForward.moveForward()
         turtle.turnLeft()
       end
+    end
+  end
+  if start == "return" then
+    toStart(length, width)
+  elseif start == "up" then
+    for i = 1, depth do
+      turtle.up()
     end
   end
 end
