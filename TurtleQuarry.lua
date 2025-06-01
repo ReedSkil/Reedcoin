@@ -63,17 +63,20 @@ function quarry(length, width, depth, newstart, newblockname)
   for i = 1, length do
     for j = 1, width do
       mineColumn(depth, down, blockname)
-      turtleForward.moveForward()
+      turtle.dig()
+      turtle.forward()
     end
     if i < length then
       mineColumn(depth, down, blockname)
       if i % 2 == 1 then
         turtle.turnRight()
-        turtleForward.moveForward()
+        turtle.dig()
+        turtle.forward()
         turtle.turnRight()
       else
         turtle.turnLeft()
-        turtleForward.moveForward()
+        turtle.dig()
+        turtle.forward()
         turtle.turnLeft()
       end
     end
@@ -134,18 +137,21 @@ function smartMine(length, width, depth, newstart, newblockname)
   for i = 1, length do
     for j = 1, width do
       smartMineDepth(depth, blockname)
-      turtleForward.moveForward()
+      turtle.dig()
+      turtle.forward()
     end
     if i < length then
       if i % 2 == 1 then
         smartMineDepth(depth, blockname)
         turtle.turnRight()
-        turtleForward.moveForward()
+        turtle.dig()
+        turtle.forward()
         turtle.turnRight()
       else
         smartMineDepth(depth, blockname)
         turtle.turnLeft()
-        turtleForward.moveForward()
+        turtle.dig()
+        turtle.forward()
         turtle.turnLeft()
       end
     end
