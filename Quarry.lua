@@ -19,15 +19,16 @@ function refuel(fuelcost)
     print("Fuel too Low to Start, Please Insert Buckets")
     print("Type 1 to Refuel, Type 2 to Re-select Quarry")
     choice = tonumber(read())
-    TurtleFuel.refuel()
     if choice == 2 then
       return false
+    else
+      TurtleFuel.refuel()
     end
   end
   return true
 end
 
-function fuelcheckandmine(length, width, depth, start)
+function fuelCheck(length, width, depth, start)
   fuelcost = TurtlePredict.predictSimpleQuarry(length, width, depth, start)
   if fuelcost > turtle.getFuelLevel() then
     if not refuel(fuelcost) then
@@ -35,7 +36,6 @@ function fuelcheckandmine(length, width, depth, start)
     end
   end
   return true
-  TurtleQuarry.quarry(length, width, depth, start)
 end
 
 function getUserInput()
@@ -70,7 +70,7 @@ function getUserInput()
     return length, width, depth, start
 end
 
-function finalChecks(volume)
+function volumeCheck(volume)
   choice = 0
   print("Volume: " .. volume .. " blocks")
   if volume > 800 then
@@ -89,12 +89,12 @@ function finalChecks(volume)
 end
  
 function quarry()
-  while not check do
+  while not vcheck do
     length, width, depth, start = getUserInput()
     volume = length * width * depth 
-    check = finalChecks(volume)
-      if check then
-        fuelcheckandmine(length, width, depth, start)
+    vcheck = volumeCheck(volume)
+      if vcheck and fuelCheck(length, width, depth, start) then
+        TurtleQuarry.quarry(length, width, depth, start)
       end
     end
 end
